@@ -128,7 +128,7 @@ sudo yum install git
 	sudo make install
     cat >~/ndppd/ndppd.conf <<END
 	route-ttl 30000
-	proxy he-ipv6 {
+	proxy enp1s0f0 {
 	   router no
 	   timeout 500
 	   ttl 30000
