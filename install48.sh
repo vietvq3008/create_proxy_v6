@@ -25,24 +25,7 @@ install_3proxy() {
     chkconfig 3proxy on
     cd $WORKDIR
 }
-install_ndppd() {
-    cd ~ git clone --quiet https://github.com/DanielAdolfsson/ndppd.git >/dev/null
-    cd ~/ndppd
-    make -k all >/dev/null 2>&1
-    make -k install >/dev/null 2>&1
-    cat >~/ndppd/ndppd.conf <<END
-    route-ttl 30000
-    proxy he-ipv6 {
-       router no
-       timeout 500
-       ttl 30000
-       rule ${IP6}::/${PROXY_NET_MASK} {
-          static
-       }
-    }
-    END
-  cd $WORKDIR
-}
+
 
 gen_3proxy() {
     cat <<EOF
@@ -96,7 +79,7 @@ IP4=$(curl -4 -s icanhazip.com)
 IP6="2602:fe90:5a0"
 PROXY_NET_MASK="48"
 echo "Internal ip = ${IP4}. Exteranl sub for ip6 = ${IP6}"
-install_ndppd
+
 echo "working folder = /home/proxy-installer"
 WORKDIR="/home/proxy-installer"
 WORKDATA="${WORKDIR}/data.txt"
