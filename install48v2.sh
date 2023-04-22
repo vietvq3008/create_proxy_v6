@@ -219,13 +219,13 @@ ulimit -u 600000
 ulimit -i 1200000
 ulimit -s 1000000
 ulimit -l 200000
-/sbin/ip addr add ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev he-ipv6
+/sbin/ip addr add ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev enp1s0f0
 sleep 5
 /sbin/ip -6 route add default via ${PROXY_NETWORK}::1
 /sbin/ip -6 route add local ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev lo
-/sbin/ip tunnel add he-ipv6 mode sit remote ${TUNNEL_IPV4_ADDR} local ${HOST_IPV4_ADDR} ttl 255
-/sbin/ip link set he-ipv6 up
-/sbin/ip -6 route add 2000::/3 dev he-ipv6
+/sbin/ip tunnel add enp1s0f0 mode sit remote ${TUNNEL_IPV4_ADDR} local ${HOST_IPV4_ADDR} ttl 255
+/sbin/ip link set enp1s0f0 up
+/sbin/ip -6 route add 2000::/3 dev enp1s0f0
 ~/ndppd/ndppd -d -c ~/ndppd/ndppd.conf
 sleep 2
 ~/3proxy/src/3proxy ~/3proxy/3proxy.cfg
