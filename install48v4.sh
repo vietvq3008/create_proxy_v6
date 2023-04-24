@@ -152,7 +152,7 @@ EOF
 
 gen_data() {
     seq $PROXY_START_PORT $LAST_PORT | while read port; do
-        echo "usr$(random)/pass$(random)/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
+        echo "u$(random)/p$(random)/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
     done
 }
 gen_ifconfig() {
@@ -166,6 +166,8 @@ WORKDIR="/home/proxy-installer"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir $WORKDIR && cd $_
 gen_data >$WORKDIR/data.txt
+touch $WORKDIR/data_temp.txt
+sort -u -t/ -k5,5 $WORKDIR/data.txt > $WORKDIR/data_temp.txt && mv $WORKDIR/data_temp.txt $WORKDIR/data.txt
 
 gen_3proxy > /usr/local/etc/3proxy/3proxy.cfg
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
