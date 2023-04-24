@@ -215,7 +215,7 @@ ulimit -u 600000
 ulimit -i 1200000
 ulimit -s 1000000
 ulimit -l 200000
-bash ${WORKDIR}/boot_ifconfig.sh
+
 /sbin/ip addr add ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev enp1s0f0
 sleep 5
 /sbin/ip -6 route add default via ${PROXY_NETWORK}::1
@@ -225,7 +225,10 @@ sleep 5
 /sbin/ip -6 route add 2000::/3 dev enp1s0f0
 ~/ndppd/ndppd -d -c ~/ndppd/ndppd.conf
 sleep 2
+bash ${WORKDIR}/boot_ifconfig.sh
+sleep 2
 ~/3proxy/src/3proxy ~/3proxy/3proxy.cfg
+
 exit 0
 
 END
