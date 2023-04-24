@@ -145,12 +145,16 @@ random() {
 }
 
 LAST_PORT=$(($PROXY_START_PORT + $PROXY_COUNT))
-array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
-gen48() {
-  ip48() {
-    echo "${array[$RANDOM % 16]}${array[$RANDOM % 16]}${array[$RANDOM % 16]}${array[$RANDOM % 16]}${array[$RANDOM % 16]}"
-  }
-  echo "$1:$(ip48):$(ip48):$(ip48):$(ip48):$(ip48)"
+P_VALUES=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
+generate_proxy() {
+  a=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  b=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  c=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  d=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  e=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+
+  echo "$PROXY_NETWORK:$a:$b:$c:$d$([ $PROXY_NET_MASK == 48 ] && echo ":$e" || echo "")" 
+
 }
 gen_3proxy() {
     cat <<EOF
@@ -181,7 +185,7 @@ EOF
 
 gen_data() {
     seq $PROXY_START_PORT $LAST_PORT | while read port; do
-        echo "usr$(random)/pass$(random)/$HOST_IPV4_ADDR/$port/$(gen48 $PROXY_NETWORK)"
+        echo "usr$(random)/pass$(random)/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
     done
 }
 echo "working folder = /home/proxy-installer"
