@@ -188,6 +188,11 @@ gen_data() {
         echo "usr$(random)/pass$(random)/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
     done
 }
+gen_ifconfig() {
+    cat <<EOF
+$(awk -F "/" '{print "ifconfig eth0 inet6 add " $5 "/48"}' ${WORKDATA})
+EOF
+}
 echo "working folder = /home/proxy-installer"
 WORKDIR="/home/proxy-installer"
 WORKDATA="${WORKDIR}/data.txt"
@@ -195,6 +200,9 @@ mkdir $WORKDIR && cd $_
 gen_data >$WORKDIR/data.txt
 
 gen_3proxy > ~/3proxy/3proxy.cfg
+gen_ifconfig >$WORKDIR/boot_ifconfig.sh
+chmod +x ${WORKDIR}/boot_*.sh /etc/rc.local
+
 gen_proxy_file_for_user
 
 ####
@@ -207,6 +215,7 @@ ulimit -u 600000
 ulimit -i 1200000
 ulimit -s 1000000
 ulimit -l 200000
+bash ${WORKDIR}/boot_ifconfig.sh
 /sbin/ip addr add ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev enp1s0f0
 sleep 5
 /sbin/ip -6 route add default via ${PROXY_NETWORK}::1
@@ -220,7 +229,7 @@ sleep 2
 exit 0
 
 END
-chmod +x /etc/rc.local
-bash /etc/rc.local
+
 ####
 echo "Finishing and rebooting"
+reboot now
