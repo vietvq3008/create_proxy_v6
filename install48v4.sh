@@ -67,28 +67,7 @@ echo "● Proxies protocol: $PROXY_PROTOCOL"
 
 ####
 echo "-------------------------------------------------"
-echo ">-- Updating packages and installing dependencies"
 
-####
-echo ">-- Setting up ndppd"
-sudo yum install git
-	sudo yum install gcc-c++
-	sudo yum install gcc make
-	git clone https://github.com/DanielAdolfsson/ndppd.git
-	cd ndppd
-	make
-	sudo make install
-cat >~/ndppd/ndppd.conf <<END
-route-ttl 30000
-proxy enp1s0f0 {
-   router no
-   timeout 500
-   ttl 30000
-   rule ${PROXY_NETWORK}::/${PROXY_NET_MASK} {
-      static
-   }
-}
-END
 ####
 
 echo ">-- Setting up 3proxy"
@@ -168,6 +147,7 @@ mkdir $WORKDIR && cd $_
 gen_data >$WORKDIR/data.txt
 touch $WORKDIR/data_temp.txt
 sort -u -t/ -k5,5 $WORKDIR/data.txt > $WORKDIR/data_temp.txt && mv $WORKDIR/data_temp.txt $WORKDIR/data.txt
+sort -u -t/ -k1,1 $WORKDIR/data.txt > $WORKDIR/data_temp.txt && mv $WORKDIR/data_temp.txt $WORKDIR/data.txt
 
 gen_3proxy > /usr/local/etc/3proxy/3proxy.cfg
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
