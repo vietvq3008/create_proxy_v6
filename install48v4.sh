@@ -190,8 +190,7 @@ sleep 5
 /sbin/ip link set enp1s0f0 up
 /sbin/ip -6 route add 2000::/3 dev enp1s0f0
 ~/ndppd/ndppd -d -c ~/ndppd/ndppd.conf
-sleep 2
-bash ${WORKDIR}/boot_ifconfig.sh
+
 sleep 2
 ~/3proxy/src/3proxy ~/3proxy/3proxy.cfg
 
