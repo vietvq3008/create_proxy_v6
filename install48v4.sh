@@ -106,7 +106,7 @@ install_3proxy() {
     
 }
 random() {
-	tr </dev/urandom -dc A-Za-z0-9 | head -c5
+	tr </dev/urandom -dc A-Za-z0-9 | head -c10
 	echo
 }
 
