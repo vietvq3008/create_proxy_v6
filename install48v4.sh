@@ -92,18 +92,19 @@ END
 ####
 
 echo ">-- Setting up 3proxy"
-cd ~
-wget -q https://github.com/z3APA3A/3proxy/archive/0.8.13.tar.gz
-tar xzf 0.8.13.tar.gz
-mv ~/3proxy-0.8.13 ~/3proxy
-rm 0.8.13.tar.gz
-cd ~/3proxy
-chmod +x src/
-touch src/define.txt
-echo "#define ANONYMOUS 1" >src/define.txt
-sed -i '31r src/define.txt' src/proxy.h
-make -f Makefile.Linux >/dev/null 2>&1
-
+install_3proxy() {
+    echo "installing 3proxy"
+    URL="https://github.com/z3APA3A/3proxy-archive/raw/master/0.8.6/3proxy-0.8.6.tgz"
+    wget -qO- $URL | bsdtar -xvf-
+    cd 3proxy
+    make -f Makefile.Linux
+    mkdir -p /usr/local/etc/3proxy/{bin,logs,stat}
+    cp src/3proxy /usr/local/etc/3proxy/bin/
+    cp ./scripts/rc.d/proxy.sh /etc/init.d/3proxy
+    chmod +x /etc/init.d/3proxy
+    chkconfig 3proxy on
+    
+}
 random() {
 	tr </dev/urandom -dc A-Za-z0-9 | head -c5
 	echo
@@ -159,13 +160,14 @@ gen_ifconfig() {
 $(awk -F "/" '{print "ifconfig enp1s0f0 inet6 add " $5 "/48"}' ${WORKDATA})
 EOF
 }
+install_3proxy
 echo "working folder = /home/proxy-installer"
 WORKDIR="/home/proxy-installer"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir $WORKDIR && cd $_
 gen_data >$WORKDIR/data.txt
 
-gen_3proxy > ~/3proxy/3proxy.cfg
+gen_3proxy > /usr/local/etc/3proxy/3proxy.cfg
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
 chmod +x ${WORKDIR}/boot_*.sh /etc/rc.local
 
@@ -175,20 +177,15 @@ gen_proxy_file_for_user
 echo ">-- Setting up rc.local"
 cat >/etc/rc.local <<END
 #!/bin/bash
-
 ulimit -n 600000
 ulimit -u 600000
 ulimit -i 1200000
 ulimit -s 1000000
 ulimit -l 200000
-
-
-
-~/3proxy/src/3proxy ~/3proxy/3proxy.cfg
 sleep 2
+service 3proxy start
 bash ${WORKDIR}/boot_ifconfig.sh
 exit 0
-
 END
 
 ####
