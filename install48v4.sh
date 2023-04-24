@@ -156,7 +156,7 @@ gen_data() {
 }
 gen_ifconfig() {
     cat <<EOF
-$(awk -F "/" '{print "ifconfig eth0 inet6 add " $5 "/48"}' ${WORKDATA})
+$(awk -F "/" '{print "ifconfig enp1s0f0 inet6 add " $5 "/48"}' ${WORKDATA})
 EOF
 }
 echo "working folder = /home/proxy-installer"
