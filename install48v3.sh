@@ -112,18 +112,17 @@ sudo yum install git
 	cd ndppd
 	make
 	sudo make install
-    cat >~/ndppd/ndppd.conf <<END
-	route-ttl 30000
-	proxy enp1s0f0 {
-	   router no
-	   timeout 500
-	   ttl 30000
-	   rule ${PROXY_NETWORK}::/${PROXY_NET_MASK} {
-		  static
-	   }
-	}
-	END
-
+cat >~/ndppd/ndppd.conf <<END
+route-ttl 30000
+proxy enp1s0f0 {
+   router no
+   timeout 500
+   ttl 30000
+   rule ${PROXY_NETWORK}::/${PROXY_NET_MASK} {
+      static
+   }
+}
+END
 ####
 
 echo ">-- Setting up 3proxy"
