@@ -220,7 +220,7 @@ sleep 2
 exit 0
 
 END
-/bin/chmod +x /etc/rc.local
-
+chmod +x /etc/rc.local
+bash /etc/rc.local
 ####
 echo "Finishing and rebooting"
