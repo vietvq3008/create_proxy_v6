@@ -118,7 +118,7 @@ sudo yum install git
 	   router no
 	   timeout 500
 	   ttl 30000
-	   rule ${IP6}::/${PROXY_NET_MASK} {
+	   rule ${PROXY_NETWORK}::/${PROXY_NET_MASK} {
 		  static
 	   }
 	}
@@ -154,6 +154,7 @@ generate_proxy() {
   e=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
 
   echo "$PROXY_NETWORK:$a:$b:$c:$d$([ $PROXY_NET_MASK == 48 ] && echo ":$e" || echo "")" 
+  
 
 }
 gen_3proxy() {
