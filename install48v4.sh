@@ -147,7 +147,7 @@ mkdir $WORKDIR && cd $_
 gen_data >$WORKDIR/data.txt
 touch $WORKDIR/data_temp.txt
 sort -u -t/ -k5,5 $WORKDIR/data.txt > $WORKDIR/data_temp.txt && mv $WORKDIR/data_temp.txt $WORKDIR/data.txt
-sort -u -t/ -k1,1 $WORKDIR/data.txt > $WORKDIR/data_temp.txt && mv $WORKDIR/data_temp.txt $WORKDIR/data.txt
+
 
 gen_3proxy > /usr/local/etc/3proxy/3proxy.cfg
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
