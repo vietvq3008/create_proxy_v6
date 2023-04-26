@@ -131,7 +131,7 @@ EOF
 
 gen_data() {
     seq $PROXY_START_PORT $LAST_PORT | while read port; do
-        echo "u$(random)/p$(random)/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
+        echo "admin/qniA123/$HOST_IPV4_ADDR/$port/$(generate_proxy)"
     done
 }
 gen_ifconfig() {
