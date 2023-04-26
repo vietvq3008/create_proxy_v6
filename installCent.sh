@@ -33,7 +33,7 @@ eval set -- "$options"
 # Set default values for optional arguments
 subnet=64
 proxies_type="http"
-start_port=30000
+start_port=40000
 rotating_interval=0
 use_localhost=false
 auth=true
@@ -220,15 +220,14 @@ function install_requred_packages(){
 }
 
 function install_3proxy(){
-
-  mkdir $proxy_dir 
+  mkdir $proxy_dir
   cd $proxy_dir
   echo -e "\nDownloading proxy server source...";
   ( # Install proxy server
-  wget https://github.com/3proxy/3proxy/archive/refs/tags/0.9.2.tar.gz &> /dev/null
-  tar -xf 0.9.2.tar.gz
-  rm 0.9.2.tar.gz
-  mv 3proxy-0.9.2 3proxy) &>> $script_log_file
+  wget https://github.com/3proxy/3proxy/archive/refs/tags/0.9.4.tar.gz &> /dev/null
+  tar -xf 0.9.4.tar.gz
+  rm 0.9.4.tar.gz
+  mv 3proxy-0.9.4 3proxy) &>> $script_log_file
   echo "Proxy server source code downloaded successfully";
 
   echo -e "\nStart building proxy server execution file from source...";
@@ -341,7 +340,8 @@ function create_startup_script(){
 
   if [ $auth = true ]; then
     auth_part="auth strong
-      users $user:CL:$password"
+users $user:CL:$password
+allow $user"
   fi;
 
   dedent immutable_config_part;
@@ -354,9 +354,7 @@ function create_startup_script(){
   count=1
   for random_ipv6_address in \$(cat $random_ipv6_list_file); do
       if [ "$proxies_type" = "http" ]; then proxy_startup_depending_on_type="proxy -6 -n -a"; else proxy_startup_depending_on_type="socks -6 -a"; fi;
-      echo "allow $user" >> $proxyserver_config_path
       echo "\$proxy_startup_depending_on_type -p\$port -i$backconnect_ipv4 -e\$random_ipv6_address" >> $proxyserver_config_path
-       echo "flush" >> $proxyserver_config_path
       ((port+=1))
       ((count+=1))
   done
@@ -365,7 +363,7 @@ function create_startup_script(){
   ulimit -n 600000
   ulimit -u 600000
   for ipv6_address in \$(cat ${random_ipv6_list_file}); do ip -6 addr add \${ipv6_address} dev ${interface_name};done;
-  ${user_home_dir}/proxyserver/3proxy/bin/3proxy ${proxyserver_config_path}
+  ${proxy_dir}/3proxy/bin/3proxy ${proxyserver_config_path}
   exit 0
 EOF
   
@@ -440,18 +438,16 @@ if is_proxyserver_installed; then
   create_startup_script;
   add_to_cron;
   open_ufw_backconnect_ports;
-  systemctl restart network.service
+  
   run_proxy_server;
   write_backconnect_proxies_to_file;
 else
   check_ipv6;
-  #configure_ipv6;
-  
+  configure_ipv6;
   install_3proxy;
   create_startup_script;
   add_to_cron;
   open_ufw_backconnect_ports; 
-  #systemctl restart network.service
   run_proxy_server;
   write_backconnect_proxies_to_file;
 fi;
