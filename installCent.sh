@@ -103,7 +103,7 @@ fi;
 bash_location="$(which bash)"
 # Get user home dir absolute path
 cd ~
-user_home_dir="$(pwd)"
+user_home_dir="/usr/local/etc"
 # Path to dir with all proxies info
 proxy_dir="$user_home_dir/proxyserver"
 # Path to file with config for backconnect proxy server
@@ -221,14 +221,14 @@ function install_requred_packages(){
 
 function install_3proxy(){
 
-  mkdir $proxy_dir && cd $proxy_dir
-
+  mkdir $proxy_dir 
+  cd $proxy_dir
   echo -e "\nDownloading proxy server source...";
   ( # Install proxy server
-  wget https://github.com/3proxy/3proxy/archive/refs/tags/0.9.4.tar.gz &> /dev/null
-  tar -xf 0.9.4.tar.gz
-  rm 0.9.4.tar.gz
-  mv 3proxy-0.9.4 3proxy) &>> $script_log_file
+  wget https://github.com/3proxy/3proxy/archive/refs/tags/0.9.2.tar.gz &> /dev/null
+  tar -xf 0.9.2.tar.gz
+  rm 0.9.2.tar.gz
+  mv 3proxy-0.9.2 3proxy) &>> $script_log_file
   echo "Proxy server source code downloaded successfully";
 
   echo -e "\nStart building proxy server execution file from source...";
@@ -331,7 +331,6 @@ function create_startup_script(){
   done;
 
   immutable_config_part="daemon
-    nserver 1.1.1.1
     maxconn 1000
     nscache 65536
     timeouts 1 5 30 60 180 1800 15 60
@@ -446,13 +445,13 @@ if is_proxyserver_installed; then
   write_backconnect_proxies_to_file;
 else
   check_ipv6;
-  configure_ipv6;
+  #configure_ipv6;
   
   install_3proxy;
   create_startup_script;
   add_to_cron;
   open_ufw_backconnect_ports; 
-  systemctl restart network.service
+  #systemctl restart network.service
   run_proxy_server;
   write_backconnect_proxies_to_file;
 fi;
