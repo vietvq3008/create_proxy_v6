@@ -73,7 +73,7 @@ echo "-------------------------------------------------"
 echo ">-- Setting up 3proxy"
 install_3proxy() {
     echo "installing 3proxy"
-    URL="https://github.com/z3APA3A/3proxy-archive/raw/master/0.8.6/3proxy-0.8.6.tgz"
+    URL="https://github.com/z3APA3A/3proxy-archive/raw/master/0.9.3/3proxy-0.9.3.tgz"
     wget -qO- $URL | bsdtar -xvf-
     cd 3proxy
     make -f Makefile.Linux
