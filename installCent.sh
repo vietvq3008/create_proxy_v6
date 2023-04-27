@@ -100,7 +100,7 @@ if [ -z $subnet_mask ]; then
 fi;
 
 # Define all needed paths to scripts / configs / etc
-bash_location="$(which bash)"
+bash_location="/bin/bash"
 # Get user home dir absolute path
 cd ~
 user_home_dir="/usr/local/etc"
@@ -298,7 +298,7 @@ function create_startup_script(){
   if test -f $random_ipv6_list_file; 
   then
     # Remove old ips from interface
-    for ipv6_address in \$(cat $random_ipv6_list_file); do ip -6 addr del \$ipv6_address dev $interface_name;done;
+    for ipv6_address in \$(cat $random_ipv6_list_file); do /sbin/ip -6 addr del \$ipv6_address dev $interface_name;done;
     rm -f $random_ipv6_list_file; 
   fi;
 
@@ -330,12 +330,14 @@ function create_startup_script(){
   done;
 
   immutable_config_part="daemon
-    maxconn 1000
-    nscache 65536
-    timeouts 1 5 30 60 180 1800 15 60
-    setgid 65535
-    setuid 65535
-    flush"
+maxconn 1000
+nserver 1.1.1.1
+nscache 65536
+timeouts 1 5 30 60 180 1800 15 60
+setgid 65535
+setuid 65535
+stacksize 6000
+flush"
   auth_part="auth none"
 
   if [ $auth = true ]; then
@@ -362,7 +364,7 @@ allow $user"
   # Script that adds all random ipv6 to default interface and runs backconnect proxy server
   ulimit -n 600000
   ulimit -u 600000
-  for ipv6_address in \$(cat ${random_ipv6_list_file}); do ip -6 addr add \${ipv6_address} dev ${interface_name};done;
+  for ipv6_address in \$(cat ${random_ipv6_list_file}); do /sbin/ip -6 addr add \${ipv6_address} dev ${interface_name};done;
   ${proxy_dir}/3proxy/bin/3proxy ${proxyserver_config_path}
   exit 0
 EOF
