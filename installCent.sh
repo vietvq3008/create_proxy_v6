@@ -299,7 +299,7 @@ function create_startup_script(){
   then
     # Remove old ips from interface
     for ipv6_address in \$(cat $random_ipv6_list_file); do ip -6 addr del \$ipv6_address dev $interface_name;done;
-    rm $random_ipv6_list_file; 
+    rm -f $random_ipv6_list_file; 
   fi;
 
   # Array with allowed symbols in hex (in ipv6 addresses)
