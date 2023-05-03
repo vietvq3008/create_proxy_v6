@@ -309,8 +309,6 @@ function create_startup_script(){
   function rh () { echo \${array[\$RANDOM%16]}; }
 
   rnd_subnet_ip () {
-    echo -n $subnet_mask;
-    symbol=$subnet
     a=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
     b=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
     c=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
@@ -330,7 +328,7 @@ function create_startup_script(){
   done;
 
   immutable_config_part="daemon
-maxconn 1000
+maxconn 10000
 nserver 1.1.1.1
 nscache 65536
 timeouts 1 5 30 60 180 1800 15 60
