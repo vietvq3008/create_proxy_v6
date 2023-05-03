@@ -303,30 +303,30 @@ function create_startup_script(){
   fi;
 
   # Array with allowed symbols in hex (in ipv6 addresses)
-  array=( 1 2 3 4 5 6 7 8 9 0 a b c d e f )
-
+  P_VALUES=( 1 2 3 4 5 6 7 8 9 0 a b c d e f )
+  PROXY_NET_MASK=$subnet
   # Generate random hex symbol
   function rh () { echo \${array[\$RANDOM%16]}; }
 
   rnd_subnet_ip () {
     echo -n $subnet_mask;
     symbol=$subnet
-    while (( \$symbol < 128)); do
-      if ((\$symbol % 16 == 0)); then echo -n :; fi;
-      echo -n \$(rh);
-      let "symbol += 4";
-    done;
-    echo ;
+    a=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
+    b=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
+    c=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
+    d=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
+    e=\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}\${P_VALUES[\$RANDOM % 16]}
+    echo "$subnet_mask:\$a:\$b:\$c:\$d\$([ \$PROXY_NET_MASK == 48 ] && echo ":\$e" || echo "")"
   }
 
   # Temporary variable to count generated ip's in cycle
-  count=1
+  countp=1
 
   # Generate random 'proxy_count' ipv6 of specified subnet and write it to 'ip.list' file
-  while [ "\$count" -le $proxy_count ]
+  while [ "\$countp" -le $proxy_count ]
   do
     rnd_subnet_ip >> $random_ipv6_list_file;
-    let "count += 1";
+    let "countp += 1";
   done;
 
   immutable_config_part="daemon
