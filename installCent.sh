@@ -119,7 +119,7 @@ cron_script_path="$proxy_dir/proxy-server.cron"
 # Log file for script execution
 script_log_file="/var/tmp/ipv6-proxy-server-logs.log"
 # Global network inteface name
-interface_name="enp1s0f0"
+interface_name= $(ip -o link show | awk '!/lo|vir|wl|@NONE|docker/ {print substr($2, 1, length($2)-1); exit}')
 # Last opened port for backconnect proxy
 last_port=$(($start_port + $proxy_count - 1));
 # Proxy credentials - username and password, delimited by ':', if exist, or empty string, if auth == false
